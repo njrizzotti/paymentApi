@@ -1,10 +1,10 @@
 CREATE DATABASE IF NOT EXISTS portx1;
 
 USE portx1;
-CREATE TABLE payments (
+CREATE TABLE IF NOT EXISTS payments (
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   uuid VARCHAR(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  
+
   amount DECIMAL(8, 2),
   currency VARCHAR(3),
   originator_name VARCHAR(100),
@@ -18,5 +18,6 @@ CREATE TABLE payments (
   payment_status VARCHAR(10)
 );
 
-CREATE INDEX idx_uuid
-ON payments (uuid);
+#USE portx1;
+#CREATE INDEX idx_uuid
+#ON payments (uuid);

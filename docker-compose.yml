@@ -1,0 +1,67 @@
+version: '3.7'
+services:
+  portx-db:
+    container_name: portx-db
+    image: mysql:5.7
+    networks:
+      - portx-network
+    environment:
+      - MYSQL_ROOT_USER=root
+      - MYSQL_DATABASE=portx1
+      - MYSQL_ROOT_PASSWORD=admin
+    command: --init-file /data/application/init.sql
+    volumes:
+      - ./init.sql:/data/application/init.sql
+    ports:
+      - "3307:3306"
+    restart: always
+
+  portx-app:
+    build:
+      context: .
+    container_name: portx-spring
+    image: gradle:8.0.1-jdk17
+    ports:
+      - "8080:8080"
+    networks:
+      - portx-network
+    depends_on:
+      - portx-db
+    environment:
+      - MYSQL_HOST=portx-db
+      - MYSQL_USERNAME=root
+      - MYSQL_PASSWORD=admin
+      - MYSQL_DATABASE=portx1
+      - MYSQL_PORT=3306
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+    networks:
+      - portx-network
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - 9092:9092
+    networks:
+      - portx-network
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+networks:
+  portx-network:
+    name: portx-network
+
+volumes:
+  dbvol:
