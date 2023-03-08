@@ -1,0 +1,91 @@
+swagger: '2.0'
+info:
+  version: '1.0.0'
+  title: Payments API
+paths:
+  /payments/{id}:
+    get:
+      summary: Retrieve a payment by ID
+      description: Returns a single payment object based on the ID supplied
+      parameters:
+        - name: id
+          in: path
+          description: ID of payment to retrieve
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: A payment object
+          schema:
+            $ref: '#/definitions/paymentResponse'
+  /payments:
+    post:
+      summary: Create a new payment
+      description: Creates a new payment with the supplied JSON object
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: payment
+          description: Payment object to be created
+          schema:
+            $ref: '#/definitions/paymentRequest'
+      responses:
+        '201':
+          description: Payment object created
+          schema:
+            $ref: '#/definitions/paymentResponse'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+definitions:
+  paymentRequest:
+    type: object
+    properties:
+      currency:
+        type: string
+      amount:
+        type: number
+      originator:
+        $ref: '#/definitions/customer'
+      beneficiary:
+        $ref: '#/definitions/customer'
+      sender:
+        $ref: '#/definitions/account'
+      receiver:
+        $ref: '#/definitions/account'
+  paymentResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+      currency:
+        type: string
+      amount:
+        type: number
+      originator:
+        $ref: '#/definitions/customer'
+      beneficiary:
+        $ref: '#/definitions/customer'
+      sender:
+        $ref: '#/definitions/account'
+      receiver:
+        $ref: '#/definitions/account'
+      status:
+        type: string
+  customer:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+  account:
+    type: object
+    properties:
+      accountType:
+        type: string
+      accountNumber:
+        type: string
