@@ -20,7 +20,8 @@ dependencies {
 	implementation 'com.mysql:mysql-connector-j'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation('junit:junit:4.13')
+	testImplementation 'junit:junit:4.13'
+	testImplementation 'com.h2database:h2'
 
 }
 
