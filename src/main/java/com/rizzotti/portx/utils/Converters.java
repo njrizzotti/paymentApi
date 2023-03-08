@@ -1,10 +1,16 @@
 package com.rizzotti.portx.utils;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.rizzotti.portx.dao.PaymentEntity;
 import com.rizzotti.portx.dto.Account;
 import com.rizzotti.portx.dto.Customer;
 import com.rizzotti.portx.dto.Payment;
 import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
 
 @Component
 public class Converters {
@@ -38,5 +44,15 @@ public class Converters {
         entity.setCurrency(payment.getCurrency());
         entity.setPaymentStatus(PAYMENT_STATUS_CREATED);
         return entity;
+    }
+
+    public JsonNode getPayload(PaymentEntity paymentEntity){
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+        // adding serializer to properly handler bigdecimal values.
+        module.addSerializer(BigDecimal.class, new ToStringSerializer());
+        mapper.registerModule(module);
+        JsonNode jsonNode = mapper.convertValue(paymentEntity, JsonNode.class);
+        return jsonNode;
     }
 }

@@ -1,5 +1,6 @@
 package com.rizzotti.portx.unit.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.rizzotti.portx.dao.PaymentEntity;
 import com.rizzotti.portx.dao.PaymentRepository;
 import com.rizzotti.portx.dto.Payment;
@@ -58,6 +59,25 @@ public class PaymentServiceTest extends BaseTest {
 
         // Then
         Assertions.assertFalse(result.isPresent());
+    }
+
+    @Test
+    public void createPayment() throws CustomErrorException {
+        Payment paymentMock = Mockito.mock(Payment.class);
+        PaymentEntity paymentEntityMock = Mockito.mock(PaymentEntity.class);
+        Map<String, String> headers = Collections.singletonMap(IDEMPOTENT_KEY, "12345");
+        JsonNode jsonNode = Mockito.mock(JsonNode.class);
+        // When
+        Mockito.when(paymentRepository.existRecord(Mockito.anyString())).thenReturn("");
+        Mockito.when(paymentRepository.save(Mockito.any())).thenReturn(paymentEntityMock);
+        Mockito.when(converters.getPaymentEntityFromPaymentDto(Mockito.any())).thenReturn(paymentEntityMock);
+        Mockito.when(converters.getPayload(Mockito.any())).thenReturn(jsonNode);
+        paymentService.savePayment(paymentMock, headers);
+
+        // Then
+        Mockito.verify(paymentRepository, Mockito.times(1)).existRecord(Mockito.any());
+        Mockito.verify(paymentRepository, Mockito.times(1)).save(Mockito.any());
+        Mockito.verify(KafkaStringTemplate, Mockito.times(1)).send(Mockito.any(), Mockito.any());
     }
 
     @Test

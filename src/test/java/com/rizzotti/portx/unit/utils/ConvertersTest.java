@@ -1,5 +1,9 @@
 package com.rizzotti.portx.unit.utils;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.rizzotti.portx.dao.PaymentEntity;
 import com.rizzotti.portx.dto.Account;
 import com.rizzotti.portx.dto.Customer;
@@ -74,5 +78,29 @@ public class ConvertersTest {
         Assertions.assertEquals(paymentEntity.getReceiverAccountType(), payment.getReceiver().getAccountType());
         Assertions.assertEquals(paymentEntity.getSenderAccountNumber(), payment.getSender().getAccountNumber());
         Assertions.assertEquals(paymentEntity.getSenderAccountType(), payment.getSender().getAccountType());
+    }
+
+    @Test
+    public void test() {
+        // Given
+        PaymentEntity paymentEntity = new PaymentEntity();
+        paymentEntity.setAmount(new BigDecimal(100));
+        paymentEntity.setBeneficiaryName("mockBeneficiaryName");
+        paymentEntity.setBeneficiaryId("mockBeneficiaryId");
+        paymentEntity.setOriginatorName("mockOriginatorName");
+        paymentEntity.setOriginatorId("mockOriginatorId");
+        paymentEntity.setReceiverAccountType("mockReceiverAccountType");
+        paymentEntity.setReceiverAccountNumber("mockReceiverAccountNumber");
+        paymentEntity.setSenderAccountType("mockSenderAccountType");
+        paymentEntity.setSenderAccountNumber("mockSenderAccountNumber");
+        paymentEntity.setCurrency("mockCurrency");
+        paymentEntity.setPaymentStatus("CREATED");
+
+        // When
+        JsonNode payment = converters.getPayload(paymentEntity);
+
+        // Then
+        Assertions.assertEquals(paymentEntity.getPaymentStatus(), payment.get("paymentStatus").asText());
+
     }
 }

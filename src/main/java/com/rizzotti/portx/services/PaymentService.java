@@ -55,20 +55,11 @@ public class PaymentService {
             paymentEntity.setUuid(headers.get(IDEMPOTENT_KEY));
             paymentEntity = paymentRepository.save(paymentEntity);
 
-            KafkaStringTemplate.send(PAYMENTS_TOPIC, getPayload(paymentEntity).toString());
+            KafkaStringTemplate.send(PAYMENTS_TOPIC, converters.getPayload(paymentEntity).toString());
         }catch (Exception e){
             throw new CustomErrorException(e.getMessage());
         }
         return converters.getPaymentDtoFromPaymentEntity(paymentEntity);
     }
 
-    private JsonNode getPayload(PaymentEntity paymentEntity){
-        ObjectMapper mapper = new ObjectMapper();
-        SimpleModule module = new SimpleModule();
-        // adding serializer to properly handler bigdecimal values.
-        module.addSerializer(BigDecimal.class, new ToStringSerializer());
-        mapper.registerModule(module);
-        JsonNode jsonNode = mapper.convertValue(paymentEntity, JsonNode.class);
-        return jsonNode;
-    }
 }
