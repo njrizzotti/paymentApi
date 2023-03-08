@@ -28,6 +28,12 @@ public class PaymentsRepositoryTest {
         Assertions.assertTrue(foundedPayment.get().getAmount().equals(paymentEntity.getAmount()));
     }
 
+    @Test
+    public void itShouldReturnEmptyIfPaymentDoesNotExistInDB() {
+        Optional<PaymentEntity> foundedPayment = paymentRepository.findById(1);
+        Assertions.assertFalse(foundedPayment.isPresent());
+    }
+
     private PaymentEntity createPaymentEntity(){
         PaymentEntity paymentEntity = new PaymentEntity();
         paymentEntity.setAmount(new BigDecimal(100));
