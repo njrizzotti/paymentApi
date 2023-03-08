@@ -17,15 +17,11 @@ import java.util.Optional;
 @DataJpaTest
 public class PaymentsRepositoryTest {
 
-
-    @Autowired
-    TestEntityManager entityManager;
-
     @Autowired
     PaymentRepository paymentRepository;
 
     @Test
-    public void it_should_save_user() {
+    public void itShouldSavePayment() {
         PaymentEntity paymentEntity = paymentRepository.save(createPaymentEntity());
         Optional<PaymentEntity> foundedPayment = paymentRepository.findById(paymentEntity.getId());
         Assertions.assertTrue(foundedPayment.isPresent());
