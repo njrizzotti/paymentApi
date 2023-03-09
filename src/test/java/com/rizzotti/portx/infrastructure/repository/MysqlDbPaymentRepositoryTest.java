@@ -29,7 +29,7 @@ public class MysqlDbPaymentRepositoryTest {
     private SpringDataMySqlPaymentRepository paymentRepository;
 
     @BeforeEach
-    void cleanUp(){
+    void setUp(){
     mySqlPaymentRepository = new MysqlDbPaymentRepository(paymentRepository);
 
     }
