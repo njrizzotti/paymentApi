@@ -8,7 +8,7 @@ For building and running the application using docker-compose you will need dock
 
 ## Running the application with docker-compose
 
-Once you have Docker installed and running go to the main project folder and execute 
+Once you have Docker installed and running go to the clone the project and go to the main project folder and execute 
 ```shell
 docker-compose up --build
 ```
