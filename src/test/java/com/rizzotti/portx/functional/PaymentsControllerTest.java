@@ -1,12 +1,12 @@
 package com.rizzotti.portx.functional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rizzotti.portx.controllers.PaymentsController;
-import com.rizzotti.portx.dto.Account;
-import com.rizzotti.portx.dto.Customer;
-import com.rizzotti.portx.dto.Payment;
+import com.rizzotti.portx.application.rest.PaymentsController;
+import com.rizzotti.portx.domain.Account;
+import com.rizzotti.portx.domain.Customer;
+import com.rizzotti.portx.domain.Payment;
+import com.rizzotti.portx.domain.service.PaymentService;
 import com.rizzotti.portx.exception.CustomErrorException;
-import com.rizzotti.portx.services.PaymentService;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @WebMvcTest(PaymentsController.class)
 public class PaymentsControllerTest {
+
 
     @MockBean
     PaymentService paymentService;
@@ -112,4 +113,5 @@ public class PaymentsControllerTest {
         payment.setStatus("CREATED");
         return payment;
     }
+
 }

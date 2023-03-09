@@ -1,9 +1,12 @@
 package com.rizzotti.portx.unit.controller;
 
-import com.rizzotti.portx.controllers.PaymentsController;
-import com.rizzotti.portx.dto.Payment;
+//import com.rizzotti.portx.controllers.PaymentsController;
+//import com.rizzotti.portx.dto.Payment;
+import com.rizzotti.portx.application.rest.PaymentsController;
+import com.rizzotti.portx.domain.Payment;
+import com.rizzotti.portx.domain.service.PaymentService;
 import com.rizzotti.portx.exception.CustomErrorException;
-import com.rizzotti.portx.services.PaymentService;
+//import com.rizzotti.portx.services.PaymentService;
 import com.rizzotti.portx.unit.BaseTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

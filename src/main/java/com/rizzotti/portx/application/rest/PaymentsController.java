@@ -1,8 +1,8 @@
-package com.rizzotti.portx.controllers;
+package com.rizzotti.portx.application.rest;
 
-import com.rizzotti.portx.dto.Payment;
+import com.rizzotti.portx.domain.Payment;
 import com.rizzotti.portx.exception.CustomErrorException;
-import com.rizzotti.portx.services.PaymentService;
+import com.rizzotti.portx.domain.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

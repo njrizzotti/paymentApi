@@ -1,4 +1,4 @@
-package com.rizzotti.portx.kafka;
+package com.rizzotti.portx.infrastructure.messages.kafka;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -11,7 +11,6 @@ import org.springframework.kafka.core.ProducerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class KafkaProducerConfig {

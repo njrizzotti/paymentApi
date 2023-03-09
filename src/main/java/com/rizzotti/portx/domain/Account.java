@@ -1,4 +1,4 @@
-package com.rizzotti.portx.dto;
+package com.rizzotti.portx.domain;
 
 public class Account {
 

@@ -1,4 +1,9 @@
-package com.rizzotti.portx.dto;
+package com.rizzotti.portx.domain;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 import java.math.BigDecimal;
 
@@ -12,6 +17,8 @@ public class Payment {
     Account sender;
     Account receiver;
     String status;
+
+
 
     public Integer getId() {
         return id;
@@ -75,5 +82,15 @@ public class Payment {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public JsonNode toJson(){
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+        // adding serializer to properly handler bigdecimal values.
+        module.addSerializer(BigDecimal.class, new ToStringSerializer());
+        mapper.registerModule(module);
+        JsonNode jsonNode = mapper.convertValue(this, JsonNode.class);
+        return jsonNode;
     }
 }

@@ -1,5 +1,8 @@
-package com.rizzotti.portx.dao;
+package com.rizzotti.portx.infrastructure.repository.mysql;
 
+import com.rizzotti.portx.domain.Payment;
+import com.rizzotti.portx.domain.Account;
+import com.rizzotti.portx.domain.Customer;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -23,6 +26,9 @@ public class PaymentEntity {
     private String receiverAccountType;
     private String receiverAccountNumber;
     private String paymentStatus;
+
+    public PaymentEntity() {
+    }
 
     public Integer getId() {
         return id;
@@ -128,4 +134,30 @@ public class PaymentEntity {
         this.paymentStatus = paymentStatus;
     }
 
+    public Payment toPayment() {
+        Payment payment = new Payment();
+        payment.setId(this.getId());
+        payment.setAmount(this.getAmount());
+        payment.setBeneficiary(new Customer(this.getBeneficiaryName(),this.getBeneficiaryId()));
+        payment.setOriginator(new Customer(this.getOriginatorName(), this.getOriginatorId()));
+        payment.setReceiver(new Account(this.getReceiverAccountType(), this.getReceiverAccountNumber()));
+        payment.setSender(new Account(this.getSenderAccountType(), this.getSenderAccountNumber()));
+        payment.setCurrency(this.getCurrency());
+        payment.setStatus(this.getPaymentStatus());
+        return payment;
+    }
+
+    public PaymentEntity(Payment payment){
+        this.amount = payment.getAmount();
+        this.beneficiaryId = payment.getBeneficiary().getId();
+        this.beneficiaryName = payment.getBeneficiary().getName();
+        this.originatorId = payment.getOriginator().getId();
+        this.originatorName = payment.getOriginator().getName();
+        this.receiverAccountNumber = payment.getReceiver().getAccountNumber();
+        this.receiverAccountType = payment.getReceiver().getAccountType();
+        this.senderAccountNumber = payment.getSender().getAccountNumber();
+        this.senderAccountType = payment.getSender().getAccountType();
+        this.currency = payment.getCurrency();
+        this.paymentStatus = "CREATED";
+    }
 }
