@@ -21,3 +21,11 @@ CREATE TABLE IF NOT EXISTS payments (
 #USE portx1;
 #CREATE INDEX idx_uuid
 #ON payments (uuid);
+
+USE portx1;
+CREATE TABLE IF NOT EXISTS outbox (
+  aggregate_id VARCHAR(100),
+  event_type VARCHAR(100),
+  payload VARCHAR(500),
+  created_on VARCHAR(100)
+);

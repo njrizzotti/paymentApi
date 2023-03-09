@@ -3,11 +3,13 @@ package com.rizzotti.portx.domain.service;
 import com.rizzotti.portx.domain.Account;
 import com.rizzotti.portx.domain.Customer;
 import com.rizzotti.portx.domain.Payment;
+import com.rizzotti.portx.domain.repository.OutBoxRepository;
 import com.rizzotti.portx.domain.repository.PaymentRepository;
 import com.rizzotti.portx.exception.CustomErrorException;
 import org.hibernate.metamodel.model.convert.spi.Converters;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -25,12 +27,17 @@ public class DomainPaymentServiceUnitTest {
     private PaymentRepository paymentRepository;
     private ProducerService producerService;
     private DomainPaymentService domainPaymentService;
+    private OutBoxRepository outBoxRepository;
+    private TransactionTemplate transactionTemplate;
 
+    //TODO
     @BeforeEach
     void setUp(){
         paymentRepository = mock(PaymentRepository.class);
         producerService = mock(ProducerService.class);
-        domainPaymentService = new DomainPaymentService(paymentRepository, producerService);
+        outBoxRepository = mock(OutBoxRepository.class);
+        transactionTemplate = mock(TransactionTemplate.class);
+        domainPaymentService = new DomainPaymentService(paymentRepository, producerService, outBoxRepository, transactionTemplate);
     }
 
     @Test
@@ -59,12 +66,12 @@ public class DomainPaymentServiceUnitTest {
         String uuid = UUID.randomUUID().toString();
         Payment payment = createPayment();
         Map<String, String> headers = Map.of(IDEMPOTENT_KEY, uuid);
-        when(paymentRepository.save(any(Payment.class), any())).thenReturn(payment);
 
+        when(transactionTemplate.execute(any())).thenReturn(payment);
         Payment savedPayment = domainPaymentService.savePayment(payment, headers);
 
         verify(paymentRepository).existRecord(anyString());
-        verify(paymentRepository).save(any(Payment.class), any());
+        verify(transactionTemplate).execute(any());
         verify(producerService).sendMessage(any(Payment.class));
         assertNotNull(savedPayment);
     }
@@ -91,14 +98,14 @@ public class DomainPaymentServiceUnitTest {
         String uuid = UUID.randomUUID().toString();
         Payment payment = createPayment();
         Map<String, String> headers = Map.of(IDEMPOTENT_KEY, uuid);
-        when(paymentRepository.save(any(Payment.class), anyString())).thenThrow(new RuntimeException("database error"));
+        when(transactionTemplate.execute(any())).thenThrow(new RuntimeException("database error"));
 
         CustomErrorException exception = assertThrows(CustomErrorException.class, () -> {
             domainPaymentService.savePayment(payment, headers);
         });
 
         verify(paymentRepository).existRecord(anyString());
-        verify(paymentRepository, times(1)).save(any(Payment.class), any());
+        verify(transactionTemplate).execute(any());
         verify(producerService, times(0)).sendMessage(any(Payment.class));
         assertTrue(exception.getMessage().contains("database error"));
     }
